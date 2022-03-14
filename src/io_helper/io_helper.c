@@ -1,5 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+//getting file size
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "io_helper.h"
 
@@ -11,7 +17,7 @@ void readFile(char path[], char result[])
 	fp = fopen(path, "r");
 	if (!fp)
 	{
-		perror("\n Unable to create or open file");
+		perror("\nreadFile() : \nUnable to create or open file");
 		exit(EXIT_FAILURE);
 	}
 
@@ -35,7 +41,7 @@ void writeToFile(char path[], char text[])
 	}
 	else
 	{
-		perror("\n Unable to create or open file");
+		perror("\nwriteToFile() : \nUnable to create or open file");
 		exit(EXIT_FAILURE);
 	}
 }
