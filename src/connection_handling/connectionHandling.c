@@ -39,13 +39,14 @@ void *handleConnection(void *arg)
     if (method != -1 )
     {
         char httpResponse[8192] = "";
-        enum requestType request_type;
+        enum requestType request_type = get_request_type(request_buff);
 
+        printf("request_type: %d",request_type);
         if(method == GET )
         {
             switch (request_type)
             {
-                    case TEXT_HTML:
+                case TEXT_HTML:
                 {
                     char httpResponse_temp[8192] = "";
                     char httpHeader_template[] =
@@ -66,15 +67,32 @@ void *handleConnection(void *arg)
                 case IMG_JPG:
                 {
                     printf("XXXXXXXXXXXXXXXXXXXXXXXX");
-                    char httpResponse_temp[8192] = "";
                     char httpHeader_template[] =
                         "HTTP/1.1 200 OK\n"
-                        "Content-Length: %d\n"
-                        "Content-Type: img/jpg; charset=iso-8859-1\n"
+                        "Content-Length: %zd\n"
+                        "Content-Type: img/jpg\n"
                         "\r\n";
-                    char httpBody_temp[8192 - 512] = "";
 
+                    int fd;
+                    char filename[] = "../src/web/imgs/sample_0.jpg";
+                    char filebuff[16000];
+                    struct stat filestat;
+                    FILE *fp;
 
+                    if ( ((fd = open (filename, O_RDONLY)) < -1) || (fstat(fd, &filestat) < 0) ) {
+                        printf ("Error in measuring the size of the file");
+                    }
+                    sprintf(httpResponse, httpHeader_template, filestat.st_size);
+                    
+                    fp = fopen (filename, "r");
+                    if (fp == NULL) {
+                        exit(-1);
+                    }
+                    fread (filebuff, sizeof(char), filestat.st_size + 1, fp);
+                    fclose(fp);
+
+                    send(sd, httpResponse, strlen(httpResponse), 0);
+                    send(sd, filebuff, filestat.st_size, 0);
 
                     return NULL;
                 }
