@@ -45,3 +45,15 @@ void writeToFile(char path[], char text[])
 		exit(EXIT_FAILURE);
 	}
 }
+
+void readBinnaryFile(FILE* fp,struct stat *filestat , char filename[], char result_filebuff[])
+{
+	fp = fopen (filename, "r");
+	if (fp == NULL) 
+	{
+		exit(-1);
+	}
+	
+	fread (result_filebuff, sizeof(char), filestat->st_size + 1, fp);
+	fclose(fp);
+}

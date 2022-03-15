@@ -5,21 +5,7 @@
 
 #define INDEX_HTML "..//src//web//src//index.html"
 
-
-enum methodType
-{
-	INVALID_METHOD_TYPE = -1,
-    GET,
-    POST
-};
-
-enum requestType
-{
-	INVALID_REQUEST_TYPE = -1,
-	TEXT_HTML,
-	IMG_JPG
-};
-
 void *handleConnection(void *arg);
 int get_request_method(char request[]);
 int get_request_type(char request_header[]);
+
