@@ -95,12 +95,28 @@ void *handleConnection(void *arg)
                         int fd;
                         char filename[] = "../src/web/imgs/sample_0.jpg";
                         char filebuff[32000];
-                        struct stat filestat;
+                        FILE_STAT filestat;
                         FILE *fp;
 
 
-                        // get requested file path
-                        //extract_requested_file_path(request_buff,filename);
+#pragma region exporting_filename_from_request
+                        char *request_copy = (char*)malloc(HTTP_REQUEST_MAX_LEN);
+                        char *sub_string = (char*)malloc(HTTP_REQUEST_MAX_LEN);
+
+                        strcpy(request_copy,request_buff);
+
+                        sub_string = strtok(request_copy," ");
+                        sub_string = strtok(NULL," ");
+
+
+                        char path[] = WEB_SERVER_PATH;
+                        strcat(path,sub_string);
+
+                        printf("\nP------P PATH : %s\n",path);
+
+                        free(request_copy);
+#pragma endregion
+
 
                         //get file descriptor and file info
                         if ( ((fd = open (filename, O_RDONLY)) < -1) || (fstat(fd, &filestat) < 0) ) {
@@ -112,8 +128,6 @@ void *handleConnection(void *arg)
                         
                         readBinnaryFile(fp,&filestat,filename,filebuff);
 
-                        char path[128];
-                        extract_file_path(request_buff,path);
 
                         send(sd, httpResponse, strlen(httpResponse), 0);
                         send(sd, filebuff, filestat.st_size, 0);

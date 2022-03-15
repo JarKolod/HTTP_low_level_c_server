@@ -38,16 +38,14 @@ int get_request_type(char request_header[])
 }
 
 //extracts path of file in http request
-int extract_file_path(char request[],char* result)
+int extract_file_path(char* request, char* result)
 {
-	char request_copy[HTTP_REQUEST_MAX_LEN];
-	char* delimiter_1 = "GET ";
-	char* delimiter_2 = " HTTP";
+	char *request_copy = (char*)malloc(HTTP_REQUEST_MAX_LEN);
 
-	strcpy(request_copy,request);
+	strcat(request_copy,request);
 	result = strtok(request_copy," ");
 	result = strtok(NULL," ");
 
-	printf("extract_file_path returned ==== \n%s",result);
+
 	return 0;
 }

@@ -46,7 +46,7 @@ void writeToFile(char path[], char text[])
 	}
 }
 
-void readBinnaryFile(FILE* fp,struct stat *filestat , char filename[], char result_filebuff[])
+void readBinnaryFile(FILE* fp, FILE_STAT* filestat , char filename[], char result_filebuff[])
 {
 	fp = fopen (filename, "r");
 	if (fp == NULL) 

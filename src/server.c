@@ -7,6 +7,8 @@
 #include <string.h>
 #include <pthread.h>
 
+#include <signal.h>
+
 #include "connection_handling/connectionHandling.h"
 #include "io_helper/io_helper.h"
 
@@ -15,9 +17,22 @@
 #define True 1
 #define False 0
 
+int main_socket_descriptor = -1;
+
+void siginit_handle(int main_sd)
+{
+    if(main_socket_descriptor != -1)
+    {
+        fflush(stdout);
+        close(main_socket_descriptor);
+    }
+    exit(2);
+}
 
 int main(int argc, char **argv)
 {
+    signal(SIGINT,siginit_handle);
+
     int main_sd; // server's main descriptor id
     struct sockaddr_in client_addr, server_addr; // struct contating address information
 
@@ -37,6 +52,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
+    main_socket_descriptor = main_sd;
     
     server_addr.sin_family = AF_INET;/* communication domain (protocol family): */
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);/* adress not specified (wildcard address): */
