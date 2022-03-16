@@ -50,6 +50,7 @@ int main(int argc, char **argv)
     {
         perror("socket()");
         exit(EXIT_FAILURE);
+        
     }
 
     main_socket_descriptor = main_sd;
