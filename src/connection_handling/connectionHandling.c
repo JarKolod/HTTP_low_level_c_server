@@ -94,29 +94,13 @@ void *handleConnection(void *arg)
                             "\r\n";
 
                         int fd;
-                        //char filename[] = "../src/web/imgs/sample_0.jpg";
                         char filebuff[64512];
                         FILE_STAT filestat;
                         FILE *fp;
+                        char file_name[128];
 
-
-                        #pragma region extract_filename_from_request
-
-                        char request_copy[HTTP_REQUEST_MAX_LEN];
-                        char* sub_string_pointer;
-                        char file_name[128] = "../src/web";
-
-                        strcpy(request_copy,request_buff);
-
-                        sub_string_pointer = strtok(request_copy," ");
-                        sub_string_pointer = strtok(NULL," ");
-
-                        strcat(file_name,sub_string_pointer);
-
+                        extract_file_path(request_buff,file_name);
                         printf("\n=========== file_name:\n%s\n===========\n",file_name);
-
-
-                        #pragma endregion
 
                         if(
                             strstr(file_name,"favicon.ico") != NULL ||

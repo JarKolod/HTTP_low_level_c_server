@@ -38,14 +38,22 @@ int get_request_type(char request_header[])
 }
 
 //extracts path of file in http request
-int extract_file_path(char* request, char* result)
+int extract_file_path(char* request, char result[])
 {
-	char *request_copy = (char*)malloc(HTTP_REQUEST_MAX_LEN);
 
-	strcat(request_copy,request);
-	result = strtok(request_copy," ");
-	result = strtok(NULL," ");
+    char request_copy[HTTP_REQUEST_MAX_LEN];
+    char* sub_string_pointer = (char*)malloc(128);
+    char* sub_string_head = sub_string_pointer;
+
+    strcpy(request_copy,request);
+
+    memset(result,0,strlen(result));
+    strcat(result,WEB_SERVER_PATH);
 
 
-	return 0;
+    sub_string_pointer = strtok(request_copy," ");
+    sub_string_pointer = strtok(NULL," ");
+
+    strcat(result,sub_string_pointer);
+    free(sub_string_head);
 }
