@@ -94,7 +94,7 @@ void *handleConnection(void *arg)
                             "\r\n";
 
                         int fd;
-                        char filename[] = "../src/web/imgs/sample_0.jpg";
+                        //char filename[] = "../src/web/imgs/sample_0.jpg";
                         char filebuff[64512];
                         FILE_STAT filestat;
                         FILE *fp;
@@ -118,7 +118,11 @@ void *handleConnection(void *arg)
 
                         #pragma endregion
 
-                        if(strstr(file_name,"favicon.ico") != NULL)
+                        if(
+                            strstr(file_name,"favicon.ico") != NULL ||
+                            ((fd = open (file_name, O_RDONLY)) < -1) || 
+                            (fstat(fd, &filestat) < 0)
+                        )
                         {
 
                             printf ("\nError in measuring the size of the file\n");
@@ -130,36 +134,20 @@ void *handleConnection(void *arg)
                             "\r\n";
 
                             send(sd,error_response,strlen(error_response),0);
-
+                            break;
 
                         }
-                        else
-                        {
 
-                            if ( ((fd = open (file_name, O_RDONLY)) < -1) || (fstat(fd, &filestat) < 0) ) 
-                            {
-                                printf ("\nError in measuring the size of the file\n");
-
-                                char error_response[] =
-                                "HTTP/1.1 415 NOT IMPLEMENTED\n"
-                                "Content-Length: 0\n"
-                                "Content-Type: img/jpg\n"
-                                "\r\n";
-
-                                send(sd,error_response,strlen(error_response),0 );
-                                break;
-                            }
                             // insert file size into httpResponse template
                             sprintf(httpResponse, httpHeader_template, filestat.st_size);
 
                             
-                            readBinnaryFile(fp,&filestat,filename,filebuff);
+                            readBinnaryFile(fp,&filestat,file_name,filebuff);
 
 
                             send(sd, httpResponse, strlen(httpResponse), 0 );
                             send(sd, filebuff, filestat.st_size, 0);
 
-                        }
                         break;
                     }
 
