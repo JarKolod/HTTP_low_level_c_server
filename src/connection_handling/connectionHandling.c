@@ -39,6 +39,7 @@ void *handleConnection(void *arg)
 
         if(retval == 0)
         {
+            printf("exiting thread\n");
             close(sd);
             exit(EXIT_SUCCESS);
         }
@@ -94,44 +95,71 @@ void *handleConnection(void *arg)
 
                         int fd;
                         char filename[] = "../src/web/imgs/sample_0.jpg";
-                        char filebuff[32000];
+                        char filebuff[64512];
                         FILE_STAT filestat;
                         FILE *fp;
 
 
-#pragma region exporting_filename_from_request
-                        char *request_copy = (char*)malloc(HTTP_REQUEST_MAX_LEN);
-                        char *sub_string = (char*)malloc(HTTP_REQUEST_MAX_LEN);
+                        #pragma region extract_filename_from_request
+
+                        char request_copy[HTTP_REQUEST_MAX_LEN];
+                        char* sub_string_pointer;
+                        char file_name[128] = "../src/web";
 
                         strcpy(request_copy,request_buff);
 
-                        sub_string = strtok(request_copy," ");
-                        sub_string = strtok(NULL," ");
+                        sub_string_pointer = strtok(request_copy," ");
+                        sub_string_pointer = strtok(NULL," ");
+
+                        strcat(file_name,sub_string_pointer);
+
+                        printf("\n=========== file_name:\n%s\n===========\n",file_name);
 
 
-                        char path[] = WEB_SERVER_PATH;
-                        strcat(path,sub_string);
+                        #pragma endregion
 
-                        printf("\nP------P PATH : %s\n",path);
+                        if(strstr(file_name,"favicon.ico") != NULL)
+                        {
 
-                        free(request_copy);
-#pragma endregion
+                            printf ("\nError in measuring the size of the file\n");
+                            
+                            char error_response[] =
+                            "HTTP/1.1 415 NOT IMPLEMENTED\n"
+                            "Content-Length: 0\n"
+                            "Content-Type: img/jpg\n"
+                            "\r\n";
+
+                            send(sd,error_response,strlen(error_response),0);
 
 
-                        //get file descriptor and file info
-                        if ( ((fd = open (filename, O_RDONLY)) < -1) || (fstat(fd, &filestat) < 0) ) {
-                            printf ("Error in measuring the size of the file");
                         }
-                        // insert file size into httpResponse template
-                        sprintf(httpResponse, httpHeader_template, filestat.st_size);
+                        else
+                        {
 
-                        
-                        readBinnaryFile(fp,&filestat,filename,filebuff);
+                            if ( ((fd = open (file_name, O_RDONLY)) < -1) || (fstat(fd, &filestat) < 0) ) 
+                            {
+                                printf ("\nError in measuring the size of the file\n");
+
+                                char error_response[] =
+                                "HTTP/1.1 415 NOT IMPLEMENTED\n"
+                                "Content-Length: 0\n"
+                                "Content-Type: img/jpg\n"
+                                "\r\n";
+
+                                send(sd,error_response,strlen(error_response),0 );
+                                break;
+                            }
+                            // insert file size into httpResponse template
+                            sprintf(httpResponse, httpHeader_template, filestat.st_size);
+
+                            
+                            readBinnaryFile(fp,&filestat,filename,filebuff);
 
 
-                        send(sd, httpResponse, strlen(httpResponse), 0);
-                        send(sd, filebuff, filestat.st_size, 0);
+                            send(sd, httpResponse, strlen(httpResponse), 0 );
+                            send(sd, filebuff, filestat.st_size, 0);
 
+                        }
                         break;
                     }
 

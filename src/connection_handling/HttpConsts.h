@@ -1,5 +1,5 @@
 #define WEB_SERVER_PATH "../src/web"
-#define HTTP_REQUEST_MAX_LEN 512
+#define HTTP_REQUEST_MAX_LEN 1024
 
 enum methodType
 {
