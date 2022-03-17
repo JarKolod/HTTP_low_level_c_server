@@ -105,5 +105,10 @@ int main(int argc, char **argv)
     }
 
     close(main_sd);
+
+#ifdef USE_PTHREAD_EXIT
+    pthread_exit(EXIT_SUCCESS);
+#endif
+
     exit(EXIT_SUCCESS);
 }
