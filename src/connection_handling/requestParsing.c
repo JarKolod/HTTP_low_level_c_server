@@ -40,7 +40,6 @@ int get_request_type(char request_header[])
 //extracts path of file in http request
 int extract_file_path(char* request, char result[])
 {
-
     char request_copy[HTTP_REQUEST_MAX_LEN];
     char* sub_string_pointer = (char*)malloc(128);
     char* sub_string_head = sub_string_pointer;
