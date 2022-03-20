@@ -88,9 +88,9 @@ void *handleConnection(void *arg)
                     {
                         
                         char httpHeader_template[] =
-                            "HTTP/1.1 200 OK\n"
-                            "Content-Length: %zd\n"
-                            "Content-Type: img/jpg\n"
+                            "HTTP/1.1 200 OK\r\n"
+                            "Content-Length: %zd\r\n"
+                            "Content-Type: img/jpeg\r\n"
                             "\r\n";
 
                         int fd;
@@ -112,9 +112,9 @@ void *handleConnection(void *arg)
                             printf ("\nError in measuring the size of the file\n");
                             
                             char error_response[] =
-                            "HTTP/1.1 415 NOT IMPLEMENTED\n"
-                            "Content-Length: 0\n"
-                            "Content-Type: img/jpg\n"
+                            "HTTP/1.1 415 NOT IMPLEMENTED\r\n"
+                            "Content-Length: 0\r\n"
+                            "Content-Type: img/jepg\r\n"
                             "\r\n";
 
                             send(sd,error_response,strlen(error_response),0);
@@ -139,8 +139,8 @@ void *handleConnection(void *arg)
                     {
                         char httpResponse_temp[8192] = "";
                         char httpHeader_template[] =
-                            "HTTP/1.1 415\n"
-                            "Content-Type: text/html; charset=iso-8859-1\n"
+                            "HTTP/1.1 415\r\n"
+                            "Content-Type: text/html; charset=iso-8859-1\r\n"
                             "\r\n";
                         char httpBody_temp[8192 - 512] = "";
 

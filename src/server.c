@@ -101,7 +101,6 @@ int main(int argc, char **argv)
             exit(EXIT_FAILURE);
         }
 
-        pthread_detach(th);
     }
 
     close(main_sd);
